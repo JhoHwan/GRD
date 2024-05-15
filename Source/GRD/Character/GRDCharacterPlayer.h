@@ -10,6 +10,15 @@
 /**
  * 
  */
+UENUM(BlueprintType)
+enum class ESkillType : uint8
+{
+	QSkill UMETA(DisplayName = "QSkill"),
+	WSkill UMETA(DisplayName = "WSkill"),
+	ESkill UMETA(DisplayName = "ESkill"),
+	RSkill UMETA(DisplayName = "RSkill"),
+};
+
 UCLASS()
 class GRD_API AGRDCharacterPlayer : public AGRDCharacterBase, public IGRDAnimationAttackInterface
 {
@@ -19,15 +28,19 @@ public:
 	AGRDCharacterPlayer();
 
 protected:
+	bool bCanAction = true;
 
 	virtual void BeginPlay() override;
 
 	void GetCursorLocation(bool& OutHit, FVector& OutLocation) const;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Action")
 	void Move();
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Action")
 	void Attack();
+
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	void Skill(UAnimMontage* SkillMontage, ESkillType SkillType);
 
 	void ComboActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
 
@@ -42,6 +55,17 @@ private:
 	UPROPERTY(EditAnywhere, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
 
+	UPROPERTY(EditAnywhere, Category = Animation)
+	TObjectPtr<class UAnimMontage> QSkillMontage;
+
+	UPROPERTY(EditAnywhere, Category = Animation)
+	TObjectPtr<class UAnimMontage> WSkillMontage;
+
+	UPROPERTY(EditAnywhere, Category = Animation)
+	TObjectPtr<class UAnimMontage> ESkillMontage;
+
+	UPROPERTY(EditAnywhere, Category = Animation)
+	TObjectPtr<class UAnimMontage> RSkillMontage;
 
 	APlayerController* PlayerController;
 

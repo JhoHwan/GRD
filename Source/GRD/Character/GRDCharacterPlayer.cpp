@@ -46,11 +46,17 @@ void AGRDCharacterPlayer::Move()
 
 void AGRDCharacterPlayer::Attack()
 {
+	if (!bCanAction)
+	{
+		return;
+	}
+
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
 	GetCharacterMovement()->StopActiveMovement();
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
+	bCanAction = false;
 	AnimInstance->Montage_Play(ComboActionMontage);
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &AGRDCharacterPlayer::ComboActionEnd);
@@ -58,8 +64,30 @@ void AGRDCharacterPlayer::Attack()
 	AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboActionMontage);
 }
 
+void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType)
+{
+	if (!bCanAction)
+	{
+		return;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	GetCharacterMovement()->StopActiveMovement();
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+	bCanAction = false;
+	AnimInstance->Montage_Play(SkillMontage);
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &AGRDCharacterPlayer::ComboActionEnd);
+
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, SkillMontage);
+}
+
+
 void AGRDCharacterPlayer::ComboActionEnd(UAnimMontage* TargetMontage, bool IsProperlyEnded)
 {
+	bCanAction = true;
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
