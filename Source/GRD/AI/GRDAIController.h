@@ -18,13 +18,11 @@ public:
 	AGRDAIController();
 
 	UFUNCTION(BlueprintCallable)
-	void RunAI();
+	void RunAI(ACharacter* InPlayerCharacter);
 	void StopAI();
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
-
-	virtual void BeginPlay() override;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

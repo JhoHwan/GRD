@@ -13,11 +13,13 @@ AGRDAIController::AGRDAIController()
 
 }
 
-void AGRDAIController::RunAI()
+void AGRDAIController::RunAI(ACharacter* InPlayerCharacter)
 {
 	UBlackboardComponent* BlackboardPtr = Blackboard.Get();
 	if (UseBlackboard(BBAsset, BlackboardPtr))
 	{	
+		
+		Blackboard->SetValueAsObject(TEXT("AttackTarget"), InPlayerCharacter);
 		bool RunResult = RunBehaviorTree(BTAsset);
 		ensure(RunResult);
 	}
@@ -35,11 +37,4 @@ void AGRDAIController::StopAI()
 void AGRDAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	RunAI();
-}
-
-void AGRDAIController::BeginPlay()
-{
-
-
 }

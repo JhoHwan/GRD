@@ -11,8 +11,7 @@
 
 AGRDCharacterEnemy::AGRDCharacterEnemy()
 {
-	AIControllerClass = AGRDAIController::StaticClass();
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+
 }
 
 float AGRDCharacterEnemy::GetAIAttackRange()
@@ -48,11 +47,11 @@ void AGRDCharacterEnemy::AttackEnd(UAnimMontage* TargetMontage, bool IsProperlyE
 void AGRDCharacterEnemy::SetDead()
 {
 	Super::SetDead();
-
-	AGRDAIController* ABAIController = Cast<AGRDAIController>(GetController());
-	if (ABAIController)
+	
+	AGRDAIController* AIController = Cast<AGRDAIController>(GetController());
+	if (AIController)
 	{
-		ABAIController->StopAI();
+		AIController->StopAI();
 	}
 
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();

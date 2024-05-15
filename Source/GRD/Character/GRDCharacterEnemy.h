@@ -24,6 +24,7 @@ protected:
 
 	void Attack();
 	void AttackEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
+
 	virtual void SetDead() override;
 
 public:
