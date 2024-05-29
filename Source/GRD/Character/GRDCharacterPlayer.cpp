@@ -83,12 +83,14 @@ void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType
 	bCanAction = false;
 	AnimInstance->Montage_Play(SkillMontage);
 	FActorSpawnParameters ActorSpawnParameters;
+	FVector vector = GetActorLocation();
+	vector.Z += 300;
 
 	switch (SkillType)
 	{
 	case ESkillType::QSkill:
 		LookCursorPos();
-		GetWorld()->SpawnActor<AActor>(QSkillEffect, GetActorLocation(), GetActorRotation(), ActorSpawnParameters);
+		GetWorld()->SpawnActor<AActor>(QSkillEffect, vector, GetActorRotation(), ActorSpawnParameters);
 		
 		break;
 	case ESkillType::WSkill:
@@ -96,6 +98,10 @@ void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType
 	case ESkillType::ESkill:
 		break;
 	case ESkillType::RSkill:
+		LookCursorPos();
+		GetWorld()->SpawnActor<AActor>(RSkillEffect, vector, GetActorRotation(), ActorSpawnParameters);
+
+
 		break;
 	default:
 		break;

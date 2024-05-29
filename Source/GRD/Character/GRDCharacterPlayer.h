@@ -63,6 +63,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Skill")
 	TSubclassOf<AActor> QSkillEffect;
 
+
+	UPROPERTY(EditAnywhere, Category = "Skill")
+	TSubclassOf<AActor> RSkillEffect;
+
 	APlayerController* PlayerController;
 
 	
