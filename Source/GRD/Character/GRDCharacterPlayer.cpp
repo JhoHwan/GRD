@@ -82,11 +82,14 @@ void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType
 
 	bCanAction = false;
 	AnimInstance->Montage_Play(SkillMontage);
+	FActorSpawnParameters ActorSpawnParameters;
 
 	switch (SkillType)
 	{
 	case ESkillType::QSkill:
 		LookCursorPos();
+		GetWorld()->SpawnActor<AActor>(QSkillEffect, GetActorLocation(), GetActorRotation(), ActorSpawnParameters);
+		
 		break;
 	case ESkillType::WSkill:
 		break;
@@ -156,6 +159,7 @@ void AGRDCharacterPlayer::AttackHitCheck()
 		} 
 	}
 
+/*
 #if ENABLE_DRAW_DEBUG
 
 	FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
@@ -165,4 +169,5 @@ void AGRDCharacterPlayer::AttackHitCheck()
 	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
 
 #endif
+*/
 }

@@ -60,6 +60,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
 
+	UPROPERTY(EditAnywhere, Category = "Skill")
+	TSubclassOf<AActor> QSkillEffect;
+
 	APlayerController* PlayerController;
 
 	
