@@ -3,3 +3,6 @@
 
 #include "Character/GRDComboActionData.h"
 
+UGRDComboActionData::UGRDComboActionData()
+{
+}
