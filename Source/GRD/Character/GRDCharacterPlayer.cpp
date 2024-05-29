@@ -57,7 +57,11 @@ void AGRDCharacterPlayer::Attack()
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 
 	bCanAction = false;
-	AnimInstance->Montage_Play(ComboActionMontage);
+
+	LookCursorPos();
+
+	ProcessComboCommand();
+
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &AGRDCharacterPlayer::ComboActionEnd);
 
@@ -78,6 +82,23 @@ void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType
 
 	bCanAction = false;
 	AnimInstance->Montage_Play(SkillMontage);
+
+	switch (SkillType)
+	{
+	case ESkillType::QSkill:
+		LookCursorPos();
+		break;
+	case ESkillType::WSkill:
+		break;
+	case ESkillType::ESkill:
+		break;
+	case ESkillType::RSkill:
+		break;
+	default:
+		break;
+	}
+
+
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &AGRDCharacterPlayer::ComboActionEnd);
 
@@ -85,28 +106,54 @@ void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType
 }
 
 
+void AGRDCharacterPlayer::ProcessComboCommand()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(ComboActionMontage);
+}
+
 void AGRDCharacterPlayer::ComboActionEnd(UAnimMontage* TargetMontage, bool IsProperlyEnded)
 {
 	bCanAction = true;
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
+void AGRDCharacterPlayer::LookCursorPos()
+{
+	bool Hit;
+	FVector Location;
+	GetCursorLocation(Hit, Location);
+
+	if (Hit)
+	{
+		FVector ToCursor = Location - GetActorLocation();
+		ToCursor.Z = 0;
+		FRotator Rotator = ToCursor.Rotation();
+		
+		SetActorRotation(Rotator);
+	}
+
+}
+
 void AGRDCharacterPlayer::AttackHitCheck()
 {
-	FHitResult OutHitResult;
+	TArray<FHitResult> OutHitResults;
 	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);
 
-	const float AttackRange = 500.0f;
-	const float AttackRadius = 300.0f;
+	const float AttackRange = 900.0f;
+	const float AttackRadius = 250.0f;
 	const float AttackDamage = 30.0f;
 	const FVector Start = GetActorLocation() + GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
 	const FVector End = Start + GetActorForwardVector() * AttackRange;
 
-	bool HitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, CCHANNEL_GRDACTION, FCollisionShape::MakeSphere(AttackRadius), Params);
+	bool HitDetected = GetWorld()->SweepMultiByChannel(OutHitResults, Start, End, FQuat::Identity, CCHANNEL_GRDACTION, FCollisionShape::MakeSphere(AttackRadius), Params);
 	if (HitDetected)
 	{
 		FDamageEvent DamageEvent;
-		OutHitResult.GetActor()->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
+		for (auto& OutHitResult : OutHitResults)
+		{
+			OutHitResult.GetActor()->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
+		} 
 	}
 
 #if ENABLE_DRAW_DEBUG

@@ -36,13 +36,18 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void Move();
+
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void Attack();
+
+	void ProcessComboCommand();
+	void ComboActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void Skill(UAnimMontage* SkillMontage, ESkillType SkillType);
 
-	void ComboActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
+
+	void LookCursorPos();
 
 //Atack Hit Section
 protected:
@@ -55,19 +60,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
 
-	UPROPERTY(EditAnywhere, Category = Animation)
-	TObjectPtr<class UAnimMontage> QSkillMontage;
-
-	UPROPERTY(EditAnywhere, Category = Animation)
-	TObjectPtr<class UAnimMontage> WSkillMontage;
-
-	UPROPERTY(EditAnywhere, Category = Animation)
-	TObjectPtr<class UAnimMontage> ESkillMontage;
-
-	UPROPERTY(EditAnywhere, Category = Animation)
-	TObjectPtr<class UAnimMontage> RSkillMontage;
-
 	APlayerController* PlayerController;
 
-	// IGRDAnimationAttackInterface을(를) 통해 상속됨
+	
 };
