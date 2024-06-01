@@ -58,6 +58,7 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void Skill(UAnimMontage* SkillMontage, ESkillType SkillType);
 
+	void SpawnRSkillEffect();
 
 	void LookCursorPos();
 

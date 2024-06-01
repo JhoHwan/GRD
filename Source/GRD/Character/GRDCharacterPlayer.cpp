@@ -68,7 +68,6 @@ void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType
 	case ESkillType::QSkill:
 		LookCursorPos();
 		GetWorld()->SpawnActor<AActor>(QSkillEffect, vector, GetActorRotation(), ActorSpawnParameters);
-		
 		break;
 	case ESkillType::WSkill:
 		break;
@@ -86,8 +85,13 @@ void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &AGRDCharacterPlayer::ComboActionEnd);
 	AnimInstance->Montage_SetEndDelegate(EndDelegate, SkillMontage);
-
 }
+
+void AGRDCharacterPlayer::SpawnRSkillEffect()
+{
+	GetWorld()->SpawnActor<AActor>(RSkillEffect, GetActorLocation(), GetActorRotation());
+}
+
 
 void AGRDCharacterPlayer::Attack()
 {
@@ -190,6 +194,8 @@ void AGRDCharacterPlayer::LookCursorPos()
 	}
 
 }
+
+
 
 void AGRDCharacterPlayer::AttackHitCheck()
 {
