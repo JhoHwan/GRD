@@ -11,6 +11,7 @@
 #include "Physics/GRDCollision.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/DamageEvents.h"
+#include "Character/GRDComboActionData.h"
 
 AGRDCharacterPlayer::AGRDCharacterPlayer()
 {
@@ -44,30 +45,6 @@ void AGRDCharacterPlayer::Move()
 	}
 }
 
-void AGRDCharacterPlayer::Attack()
-{
-	if (!bCanAction)
-	{
-		return;
-	}
-
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-
-	GetCharacterMovement()->StopActiveMovement();
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-
-	bCanAction = false;
-
-	LookCursorPos();
-
-	ProcessComboCommand();
-
-	FOnMontageEnded EndDelegate;
-	EndDelegate.BindUObject(this, &AGRDCharacterPlayer::ComboActionEnd);
-
-	AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboActionMontage);
-}
-
 void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType)
 {
 	if (!bCanAction)
@@ -99,8 +76,6 @@ void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType
 		break;
 	case ESkillType::RSkill:
 		LookCursorPos();
-		GetWorld()->SpawnActor<AActor>(RSkillEffect, vector, GetActorRotation(), ActorSpawnParameters);
-
 
 		break;
 	default:
@@ -110,21 +85,93 @@ void AGRDCharacterPlayer::Skill(UAnimMontage* SkillMontage, ESkillType SkillType
 
 	FOnMontageEnded EndDelegate;
 	EndDelegate.BindUObject(this, &AGRDCharacterPlayer::ComboActionEnd);
-
 	AnimInstance->Montage_SetEndDelegate(EndDelegate, SkillMontage);
+
 }
 
+void AGRDCharacterPlayer::Attack()
+{
+	ProcessComboCommand();
+}
 
 void AGRDCharacterPlayer::ProcessComboCommand()
 {
+	if (CurrentCombo == 0 && bCanAction == true)
+	{
+		ComboActionBegin();
+		return;
+	}
+
+	if (!ComboTimerHandle.IsValid())
+	{
+		HasNextComboCommand = false;
+	}
+	else
+	{
+		HasNextComboCommand = true;
+	}
+}
+
+void AGRDCharacterPlayer::ComboActionBegin()
+{
+	bCanAction = false;
+	//Combo Status
+	CurrentCombo = 1;
+
+	LookCursorPos();
+
+	//Movement Setting
+	GetCharacterMovement()->StopActiveMovement();
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+
+	const float AttackSpeedRate = 1.0f;
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	AnimInstance->Montage_Play(ComboActionMontage);
+	AnimInstance->Montage_Play(ComboActionMontage, AttackSpeedRate);
+
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &AGRDCharacterPlayer::ComboActionEnd);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboActionMontage);
+
+	ComboTimerHandle.Invalidate();
+	SetComboCheckTimer();
 }
 
 void AGRDCharacterPlayer::ComboActionEnd(UAnimMontage* TargetMontage, bool IsProperlyEnded)
 {
+	ensure(CurrentCombo != 0);
 	bCanAction = true;
+	CurrentCombo = 0;
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+}
+
+void AGRDCharacterPlayer::SetComboCheckTimer()
+{
+	int32 ComboIndex = CurrentCombo - 1;
+	ensure(ComboActionData->EffectiveFrameCount.IsValidIndex(ComboIndex));
+
+	const float AttackSpeedRate = 1.0f;
+	float ComboEffectiveTime = (ComboActionData->EffectiveFrameCount[ComboIndex] / ComboActionData->FrameRate) / AttackSpeedRate;
+	if (ComboEffectiveTime > 0.0f)
+	{
+		GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &AGRDCharacterPlayer::ComboCheck, ComboEffectiveTime, false);
+	}
+}
+
+void AGRDCharacterPlayer::ComboCheck()
+{
+	ComboTimerHandle.Invalidate();
+	if (HasNextComboCommand)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+		CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, ComboActionData->MaxComboCount);
+		UE_LOG(LogTemp, Log, TEXT("%d"), CurrentCombo);
+
+		FName NextSection = *FString::Printf(TEXT("%s%d"), *ComboActionData->MontageSectionNamePrefix, CurrentCombo);
+		AnimInstance->Montage_JumpToSection(NextSection, ComboActionMontage);
+		SetComboCheckTimer();
+		HasNextComboCommand = false;
+	}
 }
 
 void AGRDCharacterPlayer::LookCursorPos()

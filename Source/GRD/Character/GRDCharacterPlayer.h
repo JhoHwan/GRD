@@ -37,11 +37,23 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void Move();
 
+//Combo Action Section
+protected:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void Attack();
 
 	void ProcessComboCommand();
+	void ComboActionBegin();
 	void ComboActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
+	void SetComboCheckTimer();
+	void ComboCheck();
+
+
+	int32 CurrentCombo = 0;
+	FTimerHandle ComboTimerHandle;
+	bool HasNextComboCommand = false;
+
+protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	void Skill(UAnimMontage* SkillMontage, ESkillType SkillType);
@@ -60,14 +72,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UGRDComboActionData> ComboActionData;
+
 	UPROPERTY(EditAnywhere, Category = "Skill")
 	TSubclassOf<AActor> QSkillEffect;
-
 
 	UPROPERTY(EditAnywhere, Category = "Skill")
 	TSubclassOf<AActor> RSkillEffect;
 
 	APlayerController* PlayerController;
-
+	
 	
 };

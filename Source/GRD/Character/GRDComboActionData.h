@@ -16,4 +16,16 @@ class GRD_API UGRDComboActionData : public UDataAsset
 	
 public:
 	UGRDComboActionData();
+
+	UPROPERTY(EditAnywhere, Category = "Name")
+	FString MontageSectionNamePrefix;
+
+	UPROPERTY(EditAnywhere, Category = "Name")
+	uint8 MaxComboCount;
+
+	UPROPERTY(EditAnywhere, Category = "Name")
+	float FrameRate;
+
+	UPROPERTY(EditAnywhere, Category = "ComboData")
+	TArray<float> EffectiveFrameCount;
 };
