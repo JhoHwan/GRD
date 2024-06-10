@@ -30,6 +30,10 @@ public:
 	FORCEINLINE float GetCurrentHp() { return CurrentHp; }
 	float ApplyDamage(float InDamage);
 
+	FORCEINLINE uint32 GetMaxLevel() const { return MaxLevel; }
+	FORCEINLINE uint32 GetCurrentLevel() const { return CurrentLevel; }
+	void LevelUp();
+
 protected:
 	void SetHp(float NewHp);
 
@@ -38,6 +42,21 @@ protected:
 
 	UPROPERTY(Transient ,VisibleInstanceOnly, Category = "Stat")
 	float CurrentHp;
+
+
+	UPROPERTY(VisibleInstanceOnly, Category = "Stat")
+	uint32 MaxLevel;
+
+	UPROPERTY(Transient ,VisibleInstanceOnly, Category = "Stat")
+	uint32 CurrentLevel;
+
+
+	UPROPERTY(VisibleInstanceOnly, Category = "Stat")
+	uint32 MaxXp;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = "Stat")
+	uint32 CurrentXp;
+
 
 	
 };

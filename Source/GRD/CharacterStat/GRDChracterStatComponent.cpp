@@ -16,7 +16,6 @@ void UGRDChracterStatComponent::BeginPlay()
 	Super::BeginPlay();
 
 	SetHp(MaxHp);
-	
 }
 
 float UGRDChracterStatComponent::ApplyDamage(float InDamage)
@@ -33,8 +32,19 @@ float UGRDChracterStatComponent::ApplyDamage(float InDamage)
 	return ActualDamage;
 }
 
+void UGRDChracterStatComponent::LevelUp()
+{
+	if (CurrentXp >= MaxHp)
+	{
+		CurrentXp = 0;
+	}
+
+	CurrentLevel++;
+}
+
 void UGRDChracterStatComponent::SetHp(float NewHp)
 {
 	CurrentHp = FMath::Clamp<float>(NewHp, 0.0f, MaxHp);
 	OnHpChanged.Broadcast(CurrentHp);
 }
+
