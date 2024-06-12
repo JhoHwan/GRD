@@ -16,8 +16,6 @@ float AGRDCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	SetDead();
-
 	return DamageAmount;
 }
 
