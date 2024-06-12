@@ -60,6 +60,7 @@ protected:
 
 	void SpawnRSkillEffect();
 
+	UFUNCTION(BlueprintCallable)
 	void LookCursorPos();
 
 //Atack Hit Section
