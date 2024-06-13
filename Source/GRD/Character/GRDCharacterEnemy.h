@@ -19,7 +19,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	TObjectPtr<class UAnimMontage> AttackMontage;
 
-	UPROPERTY(EditAnywhere,BlueprintReadOnly ,Category = "Animation")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly ,Category = "Animation")
 	TObjectPtr<class UAnimMontage> DeadMontage;
 
 	void Attack();
