@@ -22,9 +22,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly ,Category = "Animation")
 	TObjectPtr<class UAnimMontage> DeadMontage;
 
-	UFUNCTION(BlueprintCallable)
-	virtual void Attack();
+	UFUNCTION(BlueprintImplementableEvent)
+	void Attack();
 
+	UFUNCTION(BlueprintCallable)
+	void AttackBase();
+
+	UFUNCTION(BlueprintCallable)
 	void AttackEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
 
 	virtual void SetDead() override;

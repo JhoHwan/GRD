@@ -22,6 +22,7 @@ float AGRDCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 void AGRDCharacterBase::SetDead()
 {
 	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	GetMesh()->GetAnimInstance()->StopAllMontages(0.0f);
 
 	SetActorEnableCollision(false);
 }

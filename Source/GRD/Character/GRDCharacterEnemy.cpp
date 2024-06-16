@@ -24,7 +24,7 @@ float AGRDCharacterEnemy::GetAITurnSpeed()
 	return 3.0f;
 }
 
-void AGRDCharacterEnemy::Attack()
+void AGRDCharacterEnemy::AttackBase()
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
@@ -70,7 +70,6 @@ void AGRDCharacterEnemy::SetDead()
 void AGRDCharacterEnemy::AttackByAI()
 {
 	Attack();
-	
 }
 
 void AGRDCharacterEnemy::SetAIAttackDelegate(const FAICharacterAttackFinished& InOnAttackFinished)
