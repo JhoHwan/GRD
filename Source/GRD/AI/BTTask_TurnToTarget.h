@@ -17,6 +17,9 @@ class GRD_API UBTTask_TurnToTarget : public UBTTaskNode
 public:
 	UBTTask_TurnToTarget();
 
-	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
+private:
+	bool IsFacingPlayer(AActor* AIActor, AActor* TargetActor, float ToleranceDegrees = 5.0f) const;
 };
